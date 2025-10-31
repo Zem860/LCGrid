@@ -116,7 +116,7 @@
         <template #toolbar="{selectedItems}">
           <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <button class="btn btn-color01 btn-sm me-1" @click="openModal()">
+                <button class="btn btn-color01 btn-sm me-1" @click="openModal({})">
                   <i class="fas fa-add me-2" aria-hidden="true"></i>新增
                 </button>
                 <button class="btn btn-danger btn-sm me-1" @click="deleteItems">
@@ -156,11 +156,15 @@
         </template>
       </lc-grid-vue>
       <!-- 新增燈箱 -->
-      <lc-modal ref="modalRef" @hidden="onModalHidden">
+      <lc-modal ref="modalRef" @hidden="onModalHidden" v-model="modalData">
         <template #header>
           <h1 class="modal-title fs-5">彈出視窗 - {新增/編輯/檢視}</h1>
         </template>
         <template #body>
+          <div class="mb-3">
+            <label for="input-user required">承辦人</label>
+            <input id="input-user" type="text" class="form-control" v-model="modalData.User">
+          </div>
           <div class="mb-3">
             <label for="input0" class="form-label required">公文文號</label>
             <input type="text" class="form-control" v-model="modalData.ReceNo">
@@ -171,7 +175,7 @@
           </div>
         </template>
         <template #footer>
-          <button type="button" class="btn btn-color01">儲存</button>
+          <button type="button" class="btn btn-color01" @click="saveModal">儲存</button>
         </template>
       </lc-modal>
     </div>
@@ -179,7 +183,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js" integrity="sha512-FwNWaxyfy2XlEINoSnZh1JQ5TRRtGow0D6XcmAWmYCRgvqOUTnzCxPc9uF35u5ZEpirk1uhlPVA19tflhvnW1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://unpkg.com/primevue@4.3.2/umd/primevue.min.js"></script>
+  <!-- 使用類似vuestic的套件引入寫好的原件 -->
   <script src="https://unpkg.com/@primevue/themes@4.2.5/umd/aura.min.js"></script>
+  <!-- 使用primevue的樣式 -->
   <script>
     (() => {
       const primevueOption = {
