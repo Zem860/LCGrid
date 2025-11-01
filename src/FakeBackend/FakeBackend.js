@@ -62,6 +62,8 @@ const GetList = (searchModel) => {
   return paginateData(searchModel);
 }
 
+const GetListLength = ()=> database.length();
+
 /**
  * 根據 ID 獲取單筆資料
  * @param {number} id - 資料 ID
@@ -110,4 +112,5 @@ export default {
   Create,
   Update,
   Delete,
+  GetListLength,
 };

@@ -36,6 +36,7 @@
     <!-- 內容切換 -->
 
     <div class="container-fluid" id="app">
+      <test>{{test}}</test>
       <div class="main-title">
         <h5>教育訓練題目</h5>
         <nav aria-label="breadcrumb" class="d-none d-sm-inline-block ms-auto">
@@ -180,6 +181,7 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://unpkg.com/primevue@4.3.2/umd/primevue.min.js"></script>
   <script src="https://unpkg.com/@primevue/themes@4.2.5/umd/aura.min.js"></script>
+  <!-- 在瀏覽器執行、透過 CDN 載入 Vue 與 PrimeVue 的全域版本 -->
   <script>
     (() => {
       const primevueOption = {
@@ -222,7 +224,9 @@
       PrimeVue.InputNumber.extends.props.maxFractionDigits.default = 6
 
       const originalCreateApp = Vue.createApp
+      // 把整包vue先用變數存起來
       Vue.createApp = (options) => {
+        // 把本來的覆蓋成自己做的版本，讓瀏覽器上面的這個vue可以直接使用(共享)這些元件，之後再index.js呼叫的就是這個版本   
         const app = originalCreateApp(options)
           .component('dropdown', PrimeVue.Select)
           .component('datepicker', PrimeVue.DatePicker)

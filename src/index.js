@@ -3,7 +3,8 @@ import {LcGridVue, LcColumn} from './components/LcGridVue/LcGridVue.js';
 import LcModal from './components/LcModal/LcModal.js';
 import LcDatepicker from './components/LcDatepicker/LcDatepicker.js';
 import FakeBackend from './FakeBackend/FakeBackend.js';
-
+import test from './components/Test/test.js';
+// test引入近來
 const {
   createApp,
   ref,
@@ -16,7 +17,9 @@ const app = createApp({
     LcGridVue,
     LcColumn,
     LcModal,
-    LcDatepicker
+    LcDatepicker,
+    test
+    // 需要註冊成元件
   },
   setup() {
     const grid = ref(null);
@@ -50,7 +53,7 @@ const app = createApp({
       changeUser,
       openModal,
       onModalHidden,
-      
+      test,
       modalRef,
       modalData,
       grid,
