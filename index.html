@@ -275,6 +275,19 @@
             </button>
           </template>
         </lc-modal>
+        <warning-modal ref="warningModalRef">
+          <template #header>你確定要刪除嗎?</template>
+          <template #body>
+            刪除以下案件
+            <ul>
+              <li v-for="caseNo in warningModalData" >{{caseNo}}</li>
+            </ul>
+          </template>
+          <template #footer>
+            <button class="btn btn-outline-secondary">取消</button>
+            <button class="btn btn-outline-danger" @click="deleteCases">確認刪除</button>
+          </template>
+        </warning-modal>
       </div>
     </main>
     <script

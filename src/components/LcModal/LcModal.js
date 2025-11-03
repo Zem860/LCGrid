@@ -41,15 +41,13 @@ export default {
 
     const save = (mode = "create", data) => {
       if (mode === "edit") {         
-        console.log(data)    
         FakeBackend.Update(data.SN, data)
         hide();
       }
 
       const SN = FakeBackend.GetDataLength() + 1;
       const { ReceNo, User } = data;
-
-      const today = dayjs(); // 有用 CDN 的話這是全域；若是 ES 模組要 `import dayjs from 'dayjs'`
+      const today = dayjs();
       const dbShape = {
         SN,
         ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,

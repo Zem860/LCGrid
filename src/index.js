@@ -4,6 +4,8 @@ import LcModal from "./components/LcModal/LcModal.js";
 import LcDatepicker from "./components/LcDatepicker/LcDatepicker.js";
 import FakeBackend from "./FakeBackend/FakeBackend.js";
 import test from "./components/Test/test.js";
+import WarningModal from "./components/LcModal/WarningModal.js";
+import { warn } from "vue";
 // test引入近來
 const { createApp, ref, onMounted, watch, toRaw } = Vue;
 
@@ -13,6 +15,7 @@ const app = createApp({
     LcColumn,
     LcModal,
     LcDatepicker,
+    WarningModal,
     test,
     // 需要註冊成元件
   },
@@ -23,12 +26,27 @@ const app = createApp({
     const editModalRef = ref(null);
     const editData = ref({});
     const mode = ref("create");
+    const warningModalRef = ref(null)
+    const warningModalData = ref(null)
 
     const deleteItems = () => {
       const selectedItem = grid.value.getSelected().map((_) => _.ReceNo);
-      const messageReceNos = selectedItem.join("、");
-      alert("刪除文號:" + messageReceNos);
+      if (selectedItem.length === 0) {
+        alert("請選取欲刪除資料");
+      } else {
+        
+        const messageReceNos = selectedItem.join("、");
+        const deletecase = messageReceNos.split("、");
+        console.log(deletecase)
+        warningModalData.value = deletecase
+        openWarningModal();
+      }
     };
+
+    const deleteCases = ()=>{
+      warningModalRef.value.confirmDelete(warningModalData);
+      grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
+    }
 
     const exportList = () => {
       alert("匯出");
@@ -62,6 +80,11 @@ const app = createApp({
       grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
     };
 
+
+    const openWarningModal = ()=>{
+      warningModalRef.value.show();
+    }
+
     const onModalHidden = () => {
       modalData.value = {};
     };
@@ -74,12 +97,15 @@ const app = createApp({
       onModalHidden,
       modalSave,
       openEditModal,
+      deleteCases,
       test,
       modalRef,
       modalData,
       grid,
       editModalRef,
       editData,
+      warningModalRef,
+      warningModalData
     };
   },
 });
