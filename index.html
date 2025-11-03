@@ -212,16 +212,36 @@
             <lc-column title="承辦人"><span>{{item.User}}</span></lc-column>
             <lc-column title="狀態">
               處理中
-              <button class="btn btn-sm btn-color01 outline-btn ms-1">
+              <button class="btn btn-sm btn-color01 outline-btn ms-1" @click="openEditModal(item)">
                 編輯
               </button>
             </lc-column>
           </template>
         </lc-grid-vue>
         <!-- 新增燈箱 -->
+         <lc-modal ref="editModalRef" @hidden="onModalHidden">
+            <template #header>
+              <h1 class="modal-title fs-5">彈出視窗 -{編輯}</h1>
+            </template>
+            <template #body>
+               <div class="mb-3">
+              <label for="input0" class="form-label required">承辦人</label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="editData.User"
+              />
+            </div>
+            </template>
+            <template #footer>
+            <button type="button" @click="modalSave()" class="btn btn-outline-info">
+              儲存
+            </button>
+            </template>
+         </lc-modal>
         <lc-modal ref="modalRef" @hidden="onModalHidden">
           <template #header>
-            <h1 class="modal-title fs-5">彈出視窗 - {新增/編輯/檢視}</h1>
+            <h1 class="modal-title fs-5">彈出視窗 - {新增}</h1>
           </template>
           <template #body>
             <div class="mb-3">

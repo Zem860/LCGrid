@@ -39,6 +39,31 @@ export default {
       modelRef.value.close();
     };
 
+    const save = (mode = "create", data) => {
+      if (mode === "edit") {         
+        console.log(data)    
+        FakeBackend.Update(data.SN, data)
+        hide();
+      }
+
+      const SN = FakeBackend.GetDataLength() + 1;
+      const { ReceNo, User } = data;
+
+      const today = dayjs(); // 有用 CDN 的話這是全域；若是 ES 模組要 `import dayjs from 'dayjs'`
+      const dbShape = {
+        SN,
+        ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,
+        CaseNo: `K000${String(SN).padStart(2, "0")}`,
+        ComeDate: today.toDate(),
+        ReceDate: today.add(-60, "day").toDate(),
+        FinalDate: today.add(-30, "day").toDate(),
+        User,
+      };
+
+      FakeBackend.Create(dbShape);
+      hide();
+    };
+
     onMounted(() => {
       // 因為PrimeVue Dialog沒有BeforeHide事件，所以先自己攔截
       const originCloseEvent = modelRef.value.close;
@@ -56,25 +81,6 @@ export default {
         defaultFunction();
       };
     });
-
-    const save = (data) => {
-      const SN = FakeBackend.GetDataLength() + 1;
-      const { ReceNo, User } = data;
-
-      const today = dayjs(); // 有用 CDN 的話這是全域；若是 ES 模組要 `import dayjs from 'dayjs'`
-      const dbShape = {
-        SN,
-        ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,
-        CaseNo: `K000${String(SN).padStart(2, "0")}`,
-        ComeDate: today.toDate(),
-        ReceDate: today.add(-60, "day").toDate(),
-        FinalDate: today.add(-30, "day").toDate(),
-        User,
-      };
-
-      FakeBackend.Create(dbShape);
-      hide(); // 用你自己的 hide()，裡面會觸發清空與 hidden 事件
-    };
 
     const handleHidden = () => {
       emit("hidden");
