@@ -1,10 +1,16 @@
-import "./styles.scss";
-import { LcGridVue, LcColumn } from "./components/LcGridVue/LcGridVue.js";
-import LcModal from "./components/LcModal/LcModal.js";
-import LcDatepicker from "./components/LcDatepicker/LcDatepicker.js";
-import FakeBackend from "./FakeBackend/FakeBackend.js";
-
-const { createApp, ref, onMounted, watch } = Vue;
+import './styles.scss';
+import {LcGridVue, LcColumn} from './components/LcGridVue/LcGridVue.js';
+import LcModal from './components/LcModal/LcModal.js';
+import LcDatepicker from './components/LcDatepicker/LcDatepicker.js';
+import FakeBackend from './FakeBackend/FakeBackend.js';
+import test from './components/Test/test.js';
+// test引入近來
+const {
+  createApp,
+  ref,
+  onMounted,
+  watch
+} = Vue;
 
 const app = createApp({
   components: {
@@ -12,6 +18,8 @@ const app = createApp({
     LcColumn,
     LcModal,
     LcDatepicker,
+    test
+    // 需要註冊成元件
   },
   setup() {
     const grid = ref(null);
@@ -24,37 +32,22 @@ const app = createApp({
       alert("刪除文號:" + messageReceNos);
     };
 
-    const exportList = () => {
-      alert("匯出");
-    };
-    const changeUser = () => {
-      alert("異動承辦人");
-    };
-    const openModal = (doc) => {
-      modalData.value = { ...doc };
-      modalRef.value.show();
-    };
-    const saveModal = () => {
-      const {User, ReceNo} = {...modalData.value};
-      const i = 101; // 假設新增的ID是101
-      // FakeBackend.GetList();
-      const dataStructure = {
-        SN: i + 1,
-        ReceNo: `11201010000${i.toString().padStart(2, '0')}`,
-        CaseNo: `K000${i.toString().padStart(2, '0')}`,
-        ComeDate: dayjs().add(i, 'day').toDate(),
-        ReceDate: dayjs().add(i - 60, 'day').toDate(),
-        FinalDate: dayjs().add(i - 30, 'day').toDate(),
-        User: `${User}`,
-      }
-      FakeBackend.Create(dataStructure);
-        // 排序最新在前＋跳回第 1 頁
-      grid.value.searchData.sortField = 'SN';
-      grid.value.searchData.sortAction = 'DESC';
-      grid.value.searchData.nowPage = 1;
-      grid.value.query();
-      modalRef.value.hide();
-    };
+    const exportList = () =>{
+      alert('匯出');
+    }
+    const changeUser = () =>{
+      alert('異動承辦人');
+    }
+    const openModal = (doc)=>{
+      modalData.value = {...doc}
+      modalRef.value.show()
+    }
+    // lcmodal-->ref-->show-->index.html-->ref-->index.jsmodalopen = =lll
+    //index自己有一層js主要是控制這層但是資料還是綁在modal上面所以這裡就是操作資料要在本來的畫面做處理
+    const modalSave = () =>{ 
+      modalRef.value.save(modalData.value)
+      grid.value.query(true) //把分頁重設回第 1 頁，清除所有勾選項目
+    }
 
     const onModalHidden = () => {
       modalData.value = {};
@@ -66,8 +59,8 @@ const app = createApp({
       changeUser,
       openModal,
       onModalHidden,
-      saveModal,
-
+      modalSave,
+      test,
       modalRef,
       modalData,
       grid,
