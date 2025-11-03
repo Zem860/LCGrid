@@ -1,90 +1,109 @@
-﻿const {
-    ref,
-    computed,
-    toRaw,
-    onMounted
-} = Vue
+﻿import FakeBackend from "../../FakeBackend/FakeBackend";
+
+const { ref, computed, toRaw, onMounted } = Vue;
 
 export default {
-    components: {
+  components: {},
+  emits: ["hidden"],
+  props: {
+    /**
+     * Modal的Size
+     * */
+    modalSize: {
+      type: String,
+      validator(value, props) {
+        return ["modal-sm", "modal-lg", "modal-xl"].includes(value);
+      },
     },
-    emits: ['hidden'],
-    props: {
-        /**
-         * Modal的Size
-         * */
-        modalSize: {
-            type: String,
-            validator(value, props) {
-                return ['modal-sm', 'modal-lg', 'modal-xl'].includes(value)
-            }
-        },
-        closeText: {
-            type: String,
-            default: "取消"
-        },
+    closeText: {
+      type: String,
+      default: "取消",
     },
-    setup(props, {emit}) {
-        const initModel = ref({})
-        const updateModel = ref({})
-        const modelRef = ref()
+  },
+  setup(props, { emit }) {
+    const initModel = ref({});
+    const updateModel = ref({});
+    const modelRef = ref();
 
-        const visible = ref(false)
+    const visible = ref(false);
 
-        const show = (_initModel) => {
-            initModel.value = _initModel ? structuredClone(toRaw(_initModel)) : _initModel
-            updateModel.value = _initModel
-            visible.value = true
+    const show = (_initModel) => {
+      initModel.value = _initModel
+        ? structuredClone(toRaw(_initModel))
+        : _initModel;
+      updateModel.value = _initModel;
+      visible.value = true;
+    };
+
+    const hide = () => {
+      modelRef.value.close();
+    };
+
+    onMounted(() => {
+      // 因為PrimeVue Dialog沒有BeforeHide事件，所以先自己攔截
+      const originCloseEvent = modelRef.value.close;
+
+      modelRef.value.close = () => {
+        const defaultFunction = () => {
+          originCloseEvent();
+          // 清空資料
+          initModel.value = {};
+          updateModel.value = {};
+          // 觸發外部事件
+          handleHidden();
         };
 
-        const hide = () => {
-            modelRef.value.close()
-        }
+        defaultFunction();
+      };
+    });
 
-        onMounted(() => {
-            // 因為PrimeVue Dialog沒有BeforeHide事件，所以先自己攔截
-            const originCloseEvent = modelRef.value.close
-            modelRef.value.close = () => {
-                const defaultFunction = () => {
-                    originCloseEvent()
-                    // 清空資料
-                    initModel.value = {}
-                    updateModel.value = {}
-                    // 觸發外部事件
-                    handleHidden()
-                }
+    const save = (data) => {
+      const SN = FakeBackend.GetDataLength() + 1;
+      const { ReceNo, User } = data;
 
-                defaultFunction()
-            }
-        })
+      const today = dayjs(); // 有用 CDN 的話這是全域；若是 ES 模組要 `import dayjs from 'dayjs'`
+      const dbShape = {
+        SN,
+        ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,
+        CaseNo: `K000${String(SN).padStart(2, "0")}`,
+        ComeDate: today.toDate(),
+        ReceDate: today.add(-60, "day").toDate(),
+        FinalDate: today.add(-30, "day").toDate(),
+        User,
+      };
 
-        const handleHidden = () => {
-            emit('hidden');
-        };
+      FakeBackend.Create(dbShape);
+      hide(); // 用你自己的 hide()，裡面會觸發清空與 hidden 事件
+    };
 
-        const dialogWidth = computed(() => {
-            // 仿照Bootstrap Modal Size
-            switch (props.modalSize) {
-                case 'modal-sm':
-                    return '300px'
-                case 'modal-lg':
-                    return '800px'
-                case 'modal-xl':
-                    return '1140px'
-                default:
-                    return '500px'
-            }
-        })
+    const handleHidden = () => {
+      emit("hidden");
+    };
 
-        return {
-            modelRef,
-            show,
-            hide,
-            visible,
-            dialogWidth
-        };
-    },
-    template: `
+    const dialogWidth = computed(() => {
+      // 仿照Bootstrap Modal Size
+      switch (props.modalSize) {
+        case "modal-sm":
+          return "300px";
+        case "modal-lg":
+          return "800px";
+        case "modal-xl":
+          return "1140px";
+        default:
+          return "500px";
+      }
+    });
+
+    return {
+      modelRef,
+      show,
+      hide,
+      save,
+      visible,
+      dialogWidth,
+    };
+  },
+  template: `
         <!-- 新增燈箱 -->
         <div>
             <modal
@@ -116,4 +135,4 @@ export default {
             </modal>
         </div>
     `,
-}
+};

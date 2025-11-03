@@ -55,7 +55,6 @@ const paginateData = ({pageSize, nowPage, sortAction, sortField}) => {
     // 整個db的長度
   };
 }
-
 /**
  * 根據搜尋模型返回分頁資料
  * @param {Object} searchModel - 搜尋模型
@@ -65,7 +64,7 @@ const GetList = (searchModel) => {
   return paginateData(searchModel);
 }
 
-const GetListLength = ()=> database.length();
+const GetDataLength = ()=> database.length;
 
 /**
  * 根據 ID 獲取單筆資料
@@ -117,5 +116,5 @@ export default {
   Create,
   Update,
   Delete,
-  GetListLength,
+  GetDataLength,
 };
