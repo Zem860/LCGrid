@@ -195,7 +195,6 @@ export const LcGridVue = {
             }
 
             let postSearchModel = Object.assign({}, searchData.value);
-
             if (rememberQuery.value) {
                 setSessionStorage();
             }

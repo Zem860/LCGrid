@@ -1,9 +1,9 @@
 const database = [];
 for (let i = 0; i < 100; i++)
     database.push({
-        SN: i + 1,
-        ReceNo: `11201010000${i.toString().padStart(2, '0')}`,
-        CaseNo: `K000${i.toString().padStart(2, '0')}`,
+        SN: i + 1,    
+        ReceNo: `11201010000${i.toString().padStart(3, '0')}`, //修正排序錯誤根源
+        CaseNo: `K000${i.toString().padStart(3, '0')}`,
         ComeDate: dayjs().add(i, 'day').toDate(),
         ReceDate: dayjs().add(i - 60, 'day').toDate(),
         FinalDate: dayjs().add(i - 30, 'day').toDate(),

@@ -80,7 +80,7 @@ const app = createApp({
         default:
           console.log("default甚麼都會做")
       }
-      grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
+      grid.value.queryAll();
     };
 
 
