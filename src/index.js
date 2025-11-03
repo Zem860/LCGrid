@@ -34,7 +34,7 @@ const app = createApp({
       if (selectedItem.length === 0) {
         alert("請選取欲刪除資料");
       } else {
-        
+
         const messageReceNos = selectedItem.join("、");
         const deletecase = messageReceNos.split("、");
         console.log(deletecase)
@@ -43,7 +43,7 @@ const app = createApp({
       }
     };
 
-    const deleteCases = ()=>{
+    const deleteCases = () => {
       warningModalRef.value.confirmDelete(warningModalData);
       grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
     }
@@ -74,14 +74,17 @@ const app = createApp({
         case "edit":
           editModalRef.value.save(mode.value, editData.value);
           break;
+        case "create":
+          modalRef.value.save(mode.value, modalData.value);
+          break;
         default:
-          modalRef.value.save(modalData.value);
+          console.log("default甚麼都會做")
       }
       grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
     };
 
 
-    const openWarningModal = ()=>{
+    const openWarningModal = () => {
       warningModalRef.value.show();
     }
 

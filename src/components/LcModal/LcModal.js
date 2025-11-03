@@ -40,26 +40,31 @@ export default {
     };
 
     const save = (mode = "create", data) => {
-      if (mode === "edit") {         
+      if (mode === "edit") {
         FakeBackend.Update(data.SN, data)
         hide();
+      } else if (mode === "create") {
+        const SN = FakeBackend.GetDataLength() + 1;
+        console.log(SN)
+        const { ReceNo, User } = data;
+        const today = dayjs();
+        const dbShape = {
+          SN,
+          ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,
+          CaseNo: `K000${String(SN).padStart(2, "0")}`,
+          ComeDate: today.toDate(),
+          ReceDate: today.add(-60, "day").toDate(),
+          FinalDate: today.add(-30, "day").toDate(),
+          User,
+        };
+
+        FakeBackend.Create(dbShape);
+        hide();
+      } else{
+        console.log("我再考慮一下")
       }
 
-      const SN = FakeBackend.GetDataLength() + 1;
-      const { ReceNo, User } = data;
-      const today = dayjs();
-      const dbShape = {
-        SN,
-        ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,
-        CaseNo: `K000${String(SN).padStart(2, "0")}`,
-        ComeDate: today.toDate(),
-        ReceDate: today.add(-60, "day").toDate(),
-        FinalDate: today.add(-30, "day").toDate(),
-        User,
-      };
 
-      FakeBackend.Create(dbShape);
-      hide();
     };
 
     onMounted(() => {
