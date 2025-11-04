@@ -32,8 +32,7 @@ export default {
       //   ? structuredClone(toRaw(_initModel))
       //   : _initModel;
       // updateModel.value = _initModel;
-      console.log(mode.value)
-      switch (mode) {
+      switch (mode.value) {
         case "create":
           changedTitle.value = "新增";
 

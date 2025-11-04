@@ -53,10 +53,12 @@ const app = createApp({
     };
     const openModal = ({ item, action }) => {
       modalData.value = {};
-      mode.value = action
-      if (mode.value === "edit") {
+      mode.value = action;
+      if (mode.value === "edit" || mode.value === "review") {
         const data = FakeBackend.Get(item.SN);
         modalData.value = data;
+      } else {
+        modalData.value = {};
       }
       modalRef.value.show(mode);
       //測試目前只丟標題
@@ -90,6 +92,7 @@ const app = createApp({
       grid,
       warningModalRef,
       warningModalData,
+      mode
     };
   },
 });
