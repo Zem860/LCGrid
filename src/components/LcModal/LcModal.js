@@ -27,11 +27,12 @@ export default {
     const changedTitle = ref("新增");
     const visible = ref(false);
 
-    const show = ({ mode }) => {
+    const show = (mode) => {
       // initModel.value = _initModel
       //   ? structuredClone(toRaw(_initModel))
       //   : _initModel;
       // updateModel.value = _initModel;
+      console.log(mode.value)
       switch (mode) {
         case "create":
           changedTitle.value = "新增";
