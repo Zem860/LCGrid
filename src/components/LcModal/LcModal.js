@@ -50,8 +50,8 @@ export default {
         const today = dayjs();
         const dbShape = {
           SN,
-          ReceNo: ReceNo ?? `11201010000${String(SN).padStart(2, "0")}`,
-          CaseNo: `K000${String(SN).padStart(2, "0")}`,
+          ReceNo: ReceNo ?? `11201010000${String(SN).padStart(3, "0")}`,
+          CaseNo: `K000${String(SN).padStart(3, "0")}`,
           ComeDate: today.toDate(),
           ReceDate: today.add(-60, "day").toDate(),
           FinalDate: today.add(-30, "day").toDate(),
