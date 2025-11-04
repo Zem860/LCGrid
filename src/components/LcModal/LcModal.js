@@ -24,14 +24,28 @@ export default {
     const initModel = ref({});
     const updateModel = ref({});
     const modelRef = ref();
-
+    const changedTitle = ref("新增");
     const visible = ref(false);
 
-    const show = (_initModel) => {
-      initModel.value = _initModel
-        ? structuredClone(toRaw(_initModel))
-        : _initModel;
-      updateModel.value = _initModel;
+    const show = ({ mode }) => {
+      // initModel.value = _initModel
+      //   ? structuredClone(toRaw(_initModel))
+      //   : _initModel;
+      // updateModel.value = _initModel;
+      switch (mode) {
+        case "create":
+          changedTitle.value = "新增";
+
+          break;
+        case "edit":
+          changedTitle.value = "編輯";
+
+          break;
+        case "review":
+          changedTitle.value = "檢視";
+
+          break;
+      }
       visible.value = true;
     };
 
@@ -41,11 +55,11 @@ export default {
 
     const save = (mode = "create", data) => {
       if (mode === "edit") {
-        FakeBackend.Update(data.SN, data)
+        FakeBackend.Update(data.SN, data);
         hide();
       } else if (mode === "create") {
         const SN = FakeBackend.GetDataLength() + 1;
-        console.log(SN)
+        console.log(SN);
         const { ReceNo, User } = data;
         const today = dayjs();
         const dbShape = {
@@ -60,11 +74,9 @@ export default {
 
         FakeBackend.Create(dbShape);
         hide();
-      } else{
-        console.log("我再考慮一下")
+      } else {
+        console.log("我再考慮一下");
       }
-
-
     };
 
     onMounted(() => {
@@ -110,6 +122,7 @@ export default {
       save,
       visible,
       dialogWidth,
+      changedTitle,
     };
   },
   template: `
@@ -127,7 +140,7 @@ export default {
                     footer: 'border-top p-3'
                 }">
                 <template #header>
-                    <slot name="header"></slot>
+                    <slot name="header" :title="changedTitle"></slot>
                 </template>
                 <slot name="body"></slot>
                 <template #footer>

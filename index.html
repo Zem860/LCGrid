@@ -240,8 +240,8 @@
             </template>
          </lc-modal>
         <lc-modal ref="modalRef" @hidden="onModalHidden">
-          <template #header>
-            <h1 class="modal-title fs-5">彈出視窗 - {新增}</h1>
+          <template #header="{ title }">
+            <h1 class="modal-title fs-5">彈出視窗 - {{title}}</h1>
           </template>
           <template #body>
             <div class="mb-3">

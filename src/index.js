@@ -57,15 +57,15 @@ const app = createApp({
     const openModal = (doc) => {
       mode.value = "create";
       modalData.value = { ...doc };
-      modalRef.value.show();
+      modalRef.value.show({mode:mode.value});
+      //測試目前只丟標題
     };
 
     const openEditModal = (item) => {
       mode.value = "edit";
-
       const data = FakeBackend.Get(item.SN);
       editData.value = data;
-      editModalRef.value.show();
+      editModalRef.value.show({mode:mode.value});
     };
     // lcmodal-->ref-->show-->index.html-->ref-->index.jsmodalopen = =lll
     //index自己有一層js主要是控制這層但是資料還是綁在modal上面所以這裡就是操作資料要在本來的畫面做處理
