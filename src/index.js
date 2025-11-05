@@ -27,6 +27,21 @@ const app = createApp({
     const warningModalRef = ref(null);
     const warningModalData = ref(null);
 
+    const switchColor = (d)=>{
+      const today = dayjs()
+      const dueDay = dayjs(d)
+      const tenDaysBeforeDue = dueDay.subtract(10, 'day')
+      let color = ""
+      if (dueDay.isBefore(today, 'day')){
+        color = "text-danger"
+      } else if (dueDay.isSame(today, 'day')){
+        color = "text-success"
+      } else if (today.isBefore(dueDay, 'day') && today.isAfter(tenDaysBeforeDue, 'day')){
+        return "text-primary"
+      }
+      return color
+    }
+
     const deleteItems = () => {
       const selectedItem = grid.value.getSelected().map((_) => _.ReceNo);
       if (selectedItem.length === 0) {
@@ -86,6 +101,7 @@ const app = createApp({
       onModalHidden,
       modalSave,
       deleteCases,
+      switchColor,
       test,
       modalRef,
       modalData,

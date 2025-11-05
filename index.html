@@ -83,7 +83,6 @@
           query-url="url: /hello/world"
           :selectable="true"
           :default-search-model="{sortField: 'ReceNo', sortAction: 'DESC'}"
-          @row-click="rowClick($event)"
         >
           <template #search="{searchModel}">
             <div class="row">
@@ -207,7 +206,7 @@
               >{{item.ReceDate.toLocaleDateString()}}</lc-column
             >
             <lc-column title="到期日期"
-              ><span>{{item.FinalDate.toLocaleDateString()}}</span></lc-column
+              ><span :class="switchColor(item.FinalDate)">{{item.FinalDate.toLocaleDateString()}}</span></lc-column
             >
             <lc-column title="承辦人"><span>{{item.User}}</span></lc-column>
             <lc-column title="狀態">
