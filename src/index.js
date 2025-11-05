@@ -40,6 +40,14 @@ const app = createApp({
       }
     };
 
+const switchColor = (days) => {
+  const today = dayjs()
+  const compareday = dayjs(days)
+  
+  console.log(today.isBefore(compareday))
+}
+
+
     const deleteCases = () => {
       warningModalRef.value.confirmDelete(warningModalData);
       grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
@@ -90,6 +98,7 @@ const app = createApp({
       grid,
       warningModalRef,
       warningModalData,
+      switchColor,
     };
   },
 });
