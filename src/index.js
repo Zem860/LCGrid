@@ -46,7 +46,6 @@ const app = createApp({
       } else {
         const messageReceNos = selectedItem.join("、");
         const deletecase = messageReceNos.split("、");
-        console.log(deletecase);
         warningModalData.value = deletecase;
         openWarningModal();
       }
