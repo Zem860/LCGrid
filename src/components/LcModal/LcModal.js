@@ -74,8 +74,6 @@ export default {
 
         FakeBackend.Create(dbShape);
         hide();
-      } else {
-        console.log("我再考慮一下");
       }
     };
 

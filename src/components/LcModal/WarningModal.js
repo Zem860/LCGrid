@@ -1,24 +1,18 @@
-import { toRaw } from "vue";
 import FakeBackend from "../../FakeBackend/FakeBackend";
 
 const { ref,computed } = Vue;
 
 export default {
   components: {},
-  emits: ["hidden"],
   props: {
     modalSize: {
       type: String,
-      validator(value, props) {
+      validator(value) {
         return ["modal-sm", "modal-lg", "modal-xl"].includes(value);
       },
     },
-    closeText: {
-      type: String,
-      default: "取消",
-    },
   },
-  setup(props, { emit }) {
+  setup(props) {
     const visible = ref(false);
     const warningModalData = ref();
     const show = () => {
@@ -28,7 +22,7 @@ export default {
       visible.value = false;
     };
     const confirmDelete = (targets)=>{
-      FakeBackend.Delete(toRaw(targets.value))
+      FakeBackend.Delete(targets.value)
       hide();
     }
 
@@ -68,7 +62,7 @@ export default {
                 </template>
                 <slot name="body" :warningModelData=warningModelData></slot>
                 <template #footer>
-                 <slot name="footer"></slot>
+                 <slot name="footer" :hide="hide"></slot>
                 </template>
             </modal>
         </div>

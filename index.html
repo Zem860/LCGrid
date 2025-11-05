@@ -292,8 +292,8 @@
               <li v-for="caseNo in warningModalData">{{caseNo}}</li>
             </ul>
           </template>
-          <template #footer>
-            <button class="btn btn-outline-secondary">取消</button>
+          <template #footer="{hide}">
+            <button class="btn btn-outline-secondary" @click="hide">取消</button>
             <button class="btn btn-outline-danger" @click="deleteCases">
               確認刪除
             </button>
