@@ -56,6 +56,7 @@ export default {
     const save = (mode = "create", data) => {
       if (mode === "edit") {
         FakeBackend.Update(data.SN, data);
+        alert("編輯人員成功!!!");
         hide();
       } else if (mode === "create") {
         const SN = FakeBackend.GetDataLength() + 1;
@@ -73,6 +74,7 @@ export default {
         };
 
         FakeBackend.Create(dbShape);
+        alert("新增人員成功!!!");
         hide();
       }
     };

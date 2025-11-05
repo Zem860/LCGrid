@@ -73,7 +73,7 @@ const app = createApp({
         modalData.value = {};
       }
       modalRef.value.show(mode);
-      //測試目前只丟標題
+      //測試出現不同標題
     };
     // lcmodal-->ref-->show-->index.html-->ref-->index.jsmodalopen = =lll
     //index自己有一層js主要是控制這層但是資料還是綁在modal上面所以這裡就是操作資料要在本來的畫面做處理
