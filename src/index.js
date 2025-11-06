@@ -44,8 +44,7 @@ const app = createApp({
 
     const deleteItems = () => {
       const selectedItem = grid.value.getSelected().map((_) => _.ReceNo);
-      if (!selectedItem) {
-      } else {
+      if (selectedItem) {
         deleteModalData.value = selectedItem;
       }
       openDeleteModal();
@@ -54,8 +53,10 @@ const app = createApp({
     const deleteCases = () => {
       const confirmAction = confirm(`是否刪除`);
       if (confirmAction) {
-        deleteModalRef.value.confirmDelete(deleteModalData);
+        FakeBackend.Delete(deleteModalData.value);
+        alert("刪除人員成功!!!");
         grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
+        deleteModalRef.value.hide();
       } else {
         deleteModalRef.value.hide();
       }

@@ -1,5 +1,3 @@
-import FakeBackend from "../../FakeBackend/FakeBackend";
-
 const { ref, computed } = Vue;
 
 export default {
@@ -14,19 +12,13 @@ export default {
   },
   setup(props) {
     const visible = ref(false);
-    const noticeModalData = ref();
+    const deleteModalData = ref();
     const show = () => {
       visible.value = true;
     };
     const hide = () => {
       visible.value = false;
     };
-    const confirmDelete = (targets) => {
-      FakeBackend.Delete(targets.value);
-      alert("刪除人員成功!!!");
-      hide();
-    };
-
     const dialogWidth = computed(() => {
       // 仿照Bootstrap Modal Size
       switch (props.modalSize) {
@@ -45,9 +37,8 @@ export default {
       visible,
       show,
       hide,
-      confirmDelete,
       dialogWidth,
-      noticeModalData,
+      deleteModalData,
     };
   },
 
@@ -66,7 +57,7 @@ export default {
                 <template #header>
                     <slot name="header"></slot>
                 </template>
-                <slot name="body" :noticeModalData=noticeModalData></slot>
+                <slot name="body" :deleteModalData=deleteModalData></slot>
                 <template #footer>
                  <slot name="footer" :hide="hide"></slot>
                 </template>
