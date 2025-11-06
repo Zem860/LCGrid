@@ -14,7 +14,7 @@ export default {
   },
   setup(props) {
     const visible = ref(false);
-    const warningModalData = ref();
+    const noticeModalData = ref();
     const show = () => {
       visible.value = true;
     };
@@ -47,7 +47,7 @@ export default {
       hide,
       confirmDelete,
       dialogWidth,
-      warningModalData,
+      noticeModalData,
     };
   },
 
@@ -66,7 +66,7 @@ export default {
                 <template #header>
                     <slot name="header"></slot>
                 </template>
-                <slot name="body" :warningModelData=warningModelData></slot>
+                <slot name="body" :noticeModalData=noticeModalData></slot>
                 <template #footer>
                  <slot name="footer" :hide="hide"></slot>
                 </template>

@@ -276,23 +276,26 @@
             </button>
           </template>
         </lc-modal>
-        <warning-modal ref="warningModalRef" modal-size="modal-sm">
-          <template #header>確認刪除{{warningModalData.length}}筆資料</template>
-          <template #body>
-            刪除以下案件
-            <ul>
-              <li v-for="caseNo in warningModalData">{{caseNo}}</li>
+        <notice-modal ref="deleteModalRef" modal-size="modal-sm">
+          <template #header>
+            <p v-if="deleteModalData.length!==0">確認刪除{{deleteModalData.length}}筆資料</p>
+            <p v-else>請選取欲刪除資料</p>
+          </template>
+          <template #body>    
+            <ul v-if="deleteModalData.length!==0">
+              <li v-for="caseNo in deleteModalData">{{caseNo}}</li>
             </ul>
+            <p v-else>你沒東西刪除喔</p>
           </template>
           <template #footer="{hide}">
             <button class="btn btn-outline-secondary" @click="hide">
               取消
             </button>
-            <button class="btn btn-outline-danger" @click="deleteCases">
+            <button v-if="deleteModalData.length!==0" class="btn btn-outline-danger" @click="deleteCases">
               確認刪除
             </button>
           </template>
-        </warning-modal>
+        </notice-modal>
       </div>
     </main>
     <script

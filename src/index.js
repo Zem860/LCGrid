@@ -3,9 +3,8 @@ import { LcGridVue, LcColumn } from "./components/LcGridVue/LcGridVue.js";
 import LcModal from "./components/LcModal/LcModal.js";
 import LcDatepicker from "./components/LcDatepicker/LcDatepicker.js";
 import FakeBackend from "./FakeBackend/FakeBackend.js";
-import WarningModal from "./components/LcModal/WarningModal.js";
-import { warn } from "vue";
-const { createApp, ref, onMounted, watch, toRaw } = Vue;
+import NoticeModal from "./components/LcModal/DeleteModal.js";
+const { createApp, ref } = Vue;
 
 const app = createApp({
   components: {
@@ -13,17 +12,17 @@ const app = createApp({
     LcColumn,
     LcModal,
     LcDatepicker,
-    WarningModal,
+    NoticeModal,
     // 需要註冊成元件
   },
   setup() {
     const grid = ref(null);
     const modalData = ref({});
     const modalRef = ref(null);
-    const mode = ref("create");
+    const deleteModalRef = ref(null);
+    const deleteModalData = ref(null);
+    const mode = ref("default");
     const modeText = ref("新增");
-    const warningModalRef = ref(null);
-    const warningModalData = ref(null);
 
     const switchColor = (d) => {
       const today = dayjs();
@@ -45,19 +44,21 @@ const app = createApp({
 
     const deleteItems = () => {
       const selectedItem = grid.value.getSelected().map((_) => _.ReceNo);
-      if (selectedItem.length === 0) {
-        alert("請選取欲刪除資料");
+      if (!selectedItem) {
       } else {
-        const messageReceNos = selectedItem.join("、");
-        const deletecase = messageReceNos.split("、");
-        warningModalData.value = deletecase;
-        openWarningModal();
+        deleteModalData.value = selectedItem;
       }
+      openDeleteModal();
     };
 
     const deleteCases = () => {
-      warningModalRef.value.confirmDelete(warningModalData);
-      grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
+      const confirmAction = confirm(`是否刪除`);
+      if (confirmAction) {
+        deleteModalRef.value.confirmDelete(deleteModalData);
+        grid.value.query(true); //把分頁重設回第 1 頁，清除所有勾選項目
+      } else {
+        deleteModalRef.value.hide();
+      }
     };
 
     const exportList = () => {
@@ -91,12 +92,13 @@ const app = createApp({
     // lcmodal-->ref-->show-->index.html-->ref-->index.jsmodalopen = =lll
     //index自己有一層js主要是控制這層但是資料還是綁在modal上面所以這裡就是操作資料要在本來的畫面做處理
     const modalSave = () => {
-      console.log("modalSave");
-      if (mode.value === "edit") {
+      const actionText = mode.value === "edit" ? "更新" : "新增";
+      const confirmAction = confirm(`是否${actionText}`);
+      if (mode.value === "edit" && confirmAction) {
         const data = modalData.value;
         FakeBackend.Update(data.SN, data);
         alert("編輯人員成功!!!");
-      } else if (mode.value === "create") {
+      } else if (mode.value === "create" && confirmAction) {
         const SN = FakeBackend.GetDataLength() + 1;
         const { ReceNo, User } = modalData.value;
         const today = dayjs();
@@ -109,16 +111,18 @@ const app = createApp({
           FinalDate: today.add(-30, "day").toDate(),
           User,
         };
-
         FakeBackend.Create(dbShape);
         alert("新增人員成功!!!");
+      } else {
+        modalRef.value.hide();
       }
+      mode.value = "default";
       modalRef.value.hide();
       grid.value.queryAll();
     };
 
-    const openWarningModal = () => {
-      warningModalRef.value.show();
+    const openDeleteModal = () => {
+      deleteModalRef.value.show();
     };
 
     const onModalHidden = () => {
@@ -137,8 +141,8 @@ const app = createApp({
       modalRef,
       modalData,
       grid,
-      warningModalRef,
-      warningModalData,
+      deleteModalRef,
+      deleteModalData,
       mode,
       modeText,
     };
