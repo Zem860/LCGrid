@@ -21,23 +21,27 @@ const app = createApp({
     const modalData = ref({});
     const modalRef = ref(null);
     const mode = ref("create");
+    const modeText = ref("新增");
     const warningModalRef = ref(null);
     const warningModalData = ref(null);
 
-    const switchColor = (d)=>{
-      const today = dayjs()
-      const dueDay = dayjs(d)
-      const tenDaysBeforeDue = dueDay.subtract(10, 'day')
-      let color = ""
-      if (dueDay.isBefore(today, 'day')){
-        color = "text-danger"
-      } else if (dueDay.isSame(today, 'day')){
-        color = "text-success"
-      } else if (today.isBefore(dueDay, 'day') && today.isAfter(tenDaysBeforeDue, 'day')){
-        return "text-primary"
+    const switchColor = (d) => {
+      const today = dayjs();
+      const dueDay = dayjs(d);
+      const tenDaysBeforeDue = dueDay.subtract(10, "day");
+      let color = "";
+      if (dueDay.isBefore(today, "day")) {
+        color = "text-danger";
+      } else if (dueDay.isSame(today, "day")) {
+        color = "text-success";
+      } else if (
+        today.isBefore(dueDay, "day") &&
+        today.isAfter(tenDaysBeforeDue, "day")
+      ) {
+        return "text-primary";
       }
-      return color
-    }
+      return color;
+    };
 
     const deleteItems = () => {
       const selectedItem = grid.value.getSelected().map((_) => _.ReceNo);
@@ -64,6 +68,16 @@ const app = createApp({
     };
     const openModal = ({ item, action }) => {
       modalData.value = {};
+      switch (action) {
+        case "edit":
+          modeText.value = "編輯";
+          break;
+        case "review":
+          modeText.value = "檢視";
+          break;
+        default:
+          modeText.value = "新增";
+      }
       mode.value = action;
       if (mode.value === "edit" || mode.value === "review") {
         const data = FakeBackend.Get(item.SN);
@@ -71,13 +85,35 @@ const app = createApp({
       } else {
         modalData.value = {};
       }
-      modalRef.value.show(mode);
+      modalRef.value.show();
       //測試出現不同標題
     };
     // lcmodal-->ref-->show-->index.html-->ref-->index.jsmodalopen = =lll
     //index自己有一層js主要是控制這層但是資料還是綁在modal上面所以這裡就是操作資料要在本來的畫面做處理
     const modalSave = () => {
-      modalRef.value.save(mode.value, modalData.value);
+      console.log("modalSave");
+      if (mode.value === "edit") {
+        const data = modalData.value;
+        FakeBackend.Update(data.SN, data);
+        alert("編輯人員成功!!!");
+      } else if (mode.value === "create") {
+        const SN = FakeBackend.GetDataLength() + 1;
+        const { ReceNo, User } = modalData.value;
+        const today = dayjs();
+        const dbShape = {
+          SN,
+          ReceNo: ReceNo ?? `11201010000${String(SN).padStart(3, "0")}`,
+          CaseNo: `K000${String(SN).padStart(3, "0")}`,
+          ComeDate: today.toDate(),
+          ReceDate: today.add(-60, "day").toDate(),
+          FinalDate: today.add(-30, "day").toDate(),
+          User,
+        };
+
+        FakeBackend.Create(dbShape);
+        alert("新增人員成功!!!");
+      }
+      modalRef.value.hide();
       grid.value.queryAll();
     };
 
@@ -103,7 +139,8 @@ const app = createApp({
       grid,
       warningModalRef,
       warningModalData,
-      mode
+      mode,
+      modeText,
     };
   },
 });

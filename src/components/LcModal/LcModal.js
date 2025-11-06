@@ -1,131 +1,90 @@
-﻿import FakeBackend from "../../FakeBackend/FakeBackend";
-
-const { ref, computed, toRaw, onMounted } = Vue;
+﻿const {
+    ref,
+    computed,
+    toRaw,
+    onMounted
+} = Vue
 
 export default {
-  components: {},
-  emits: ["hidden"],
-  props: {
-    /**
-     * Modal的Size
-     * */
-    modalSize: {
-      type: String,
-      validator(value, props) {
-        return ["modal-sm", "modal-lg", "modal-xl"].includes(value);
-      },
+    components: {
     },
-    closeText: {
-      type: String,
-      default: "取消",
+    emits: ['hidden'],
+    props: {
+        /**
+         * Modal的Size
+         * */
+        modalSize: {
+            type: String,
+            validator(value, props) {
+                return ['modal-sm', 'modal-lg', 'modal-xl'].includes(value)
+            }
+        },
+        closeText: {
+            type: String,
+            default: "取消"
+        },
     },
-  },
-  setup(props, { emit }) {
-    const initModel = ref({});
-    const updateModel = ref({});
-    const modelRef = ref();
-    const changedTitle = ref("新增");
-    const visible = ref(false);
+    setup(props, {emit}) {
+        const initModel = ref({})
+        const updateModel = ref({})
+        const modelRef = ref()
 
-    const show = (mode) => {
-      // initModel.value = _initModel
-      //   ? structuredClone(toRaw(_initModel))
-      //   : _initModel;
-      // updateModel.value = _initModel;
-      switch (mode.value) {
-        case "create":
-          changedTitle.value = "新增";
+        const visible = ref(false)
 
-          break;
-        case "edit":
-          changedTitle.value = "編輯";
-
-          break;
-        case "review":
-          changedTitle.value = "檢視";
-
-          break;
-      }
-      visible.value = true;
-    };
-
-    const hide = () => {
-      modelRef.value.close();
-    };
-
-    const save = (mode = "create", data) => {
-      if (mode === "edit") {
-        FakeBackend.Update(data.SN, data);
-        alert("編輯人員成功!!!");
-        hide();
-      } else if (mode === "create") {
-        const SN = FakeBackend.GetDataLength() + 1;
-        console.log(SN);
-        const { ReceNo, User } = data;
-        const today = dayjs();
-        const dbShape = {
-          SN,
-          ReceNo: ReceNo ?? `11201010000${String(SN).padStart(3, "0")}`,
-          CaseNo: `K000${String(SN).padStart(3, "0")}`,
-          ComeDate: today.toDate(),
-          ReceDate: today.add(-60, "day").toDate(),
-          FinalDate: today.add(-30, "day").toDate(),
-          User,
+        const show = (_initModel) => {
+            initModel.value = _initModel ? structuredClone(toRaw(_initModel)) : _initModel
+            updateModel.value = _initModel
+            visible.value = true
         };
 
-        FakeBackend.Create(dbShape);
-        alert("新增人員成功!!!");
-        hide();
-      }
-    };
+        const hide = () => {
+            modelRef.value.close()
+        }
 
-    onMounted(() => {
-      // 因為PrimeVue Dialog沒有BeforeHide事件，所以先自己攔截
-      const originCloseEvent = modelRef.value.close;
+        onMounted(() => {
+            // 因為PrimeVue Dialog沒有BeforeHide事件，所以先自己攔截
+            const originCloseEvent = modelRef.value.close
+            modelRef.value.close = () => {
+                const defaultFunction = () => {
+                    originCloseEvent()
+                    // 清空資料
+                    initModel.value = {}
+                    updateModel.value = {}
+                    // 觸發外部事件
+                    handleHidden()
+                }
 
-      modelRef.value.close = () => {
-        const defaultFunction = () => {
-          originCloseEvent();
-          // 清空資料
-          initModel.value = {};
-          updateModel.value = {};
-          // 觸發外部事件
-          handleHidden();
+                defaultFunction()
+            }
+        })
+
+        const handleHidden = () => {
+            emit('hidden');
         };
 
-        defaultFunction();
-      };
-    });
+        const dialogWidth = computed(() => {
+            // 仿照Bootstrap Modal Size
+            switch (props.modalSize) {
+                case 'modal-sm':
+                    return '300px'
+                case 'modal-lg':
+                    return '800px'
+                case 'modal-xl':
+                    return '1140px'
+                default:
+                    return '500px'
+            }
+        })
 
-    const handleHidden = () => {
-      emit("hidden");
-    };
-
-    const dialogWidth = computed(() => {
-      // 仿照Bootstrap Modal Size
-      switch (props.modalSize) {
-        case "modal-sm":
-          return "300px";
-        case "modal-lg":
-          return "800px";
-        case "modal-xl":
-          return "1140px";
-        default:
-          return "500px";
-      }
-    });
-
-    return {
-      modelRef,
-      show,
-      hide,
-      save,
-      visible,
-      dialogWidth,
-      changedTitle,
-    };
-  },
-  template: `
+        return {
+            modelRef,
+            show,
+            hide,
+            visible,
+            dialogWidth
+        };
+    },
+    template: `
         <!-- 新增燈箱 -->
         <div>
             <modal
@@ -140,7 +99,7 @@ export default {
                     footer: 'border-top p-3'
                 }">
                 <template #header>
-                    <slot name="header" :title="changedTitle"></slot>
+                    <slot name="header"></slot>
                 </template>
                 <slot name="body"></slot>
                 <template #footer>
@@ -157,4 +116,4 @@ export default {
             </modal>
         </div>
     `,
-};
+}
